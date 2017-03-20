@@ -290,7 +290,7 @@ build_tab_label (CajaNotebook *nb, CajaWindowSlot *slot)
 
     /* set hbox spacing and label padding (see below) so that there's an
      * equal amount of space around the label */
-    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_show (hbox);
 
     /* setup load feedback */
@@ -317,6 +317,12 @@ build_tab_label (CajaNotebook *nb, CajaWindowSlot *slot)
     gtk_widget_set_margin_top (label, 0);
     gtk_widget_set_margin_bottom (label, 0);
 
+    /* use smaller font size */
+    PangoAttrList *attrs = pango_attr_list_new ();
+    PangoAttribute *attr = pango_attr_size_new (8192);
+    pango_attr_list_insert (attrs, attr);
+    gtk_label_set_attributes (GTK_LABEL (label), attrs);
+
     gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
     gtk_widget_show (label);
 
@@ -342,7 +348,7 @@ build_tab_label (CajaNotebook *nb, CajaWindowSlot *slot)
     gtk_widget_show (image);
 
     gtk_box_pack_start (GTK_BOX (hbox), close_button, FALSE, FALSE, 0);
-    gtk_widget_show (close_button);
+    //gtk_widget_show (close_button);
 
     drag_info = g_new0 (CajaDragSlotProxyInfo, 1);
     drag_info->target_slot = slot;
@@ -517,4 +523,3 @@ caja_notebook_can_set_current_page_relative (CajaNotebook *notebook,
 
     return caja_notebook_is_valid_relative_position (notebook, offset);
 }
-
