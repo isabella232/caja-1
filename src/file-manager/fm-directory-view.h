@@ -483,4 +483,11 @@ void		    fm_directory_view_set_initiated_unmount	      (FMDirectoryView *view,
 /* operations affecting two directory views */
 void                fm_directory_view_move_copy_items_between_views   (FMDirectoryView *source, FMDirectoryView *target, gboolean copy);
 
+#define g_fuck_fm(data) { if ((data) == NULL || !(FM_IS_DIRECTORY_VIEW (data))) { \
+    printf("CAJA FUBAR!\n"); g_return_if_fail (FM_IS_DIRECTORY_VIEW (data)); \
+} }
+#define g_fuck_fm_null(data) { if ((data) == NULL || !(FM_IS_DIRECTORY_VIEW (data))) { \
+    printf("CAJA FUBAR!\n"); g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (data), 0); \
+} }
+
 #endif /* FM_DIRECTORY_VIEW_H */

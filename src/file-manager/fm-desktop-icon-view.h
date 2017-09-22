@@ -57,4 +57,8 @@ typedef struct
 GType   fm_desktop_icon_view_get_type (void);
 void fm_desktop_icon_view_register (void);
 
+#define g_fuck_fm(data) { if ((data) == NULL || !(FM_IS_DIRECTORY_VIEW (data))) { \
+    printf("CAJA FUBAR!\n"); g_return_if_fail (FM_IS_DIRECTORY_VIEW (data)); \
+} }
+
 #endif /* FM_DESKTOP_ICON_VIEW_H */

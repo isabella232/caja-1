@@ -633,7 +633,7 @@ fm_directory_view_get_containing_window (FMDirectoryView *view)
 {
 	GtkWidget *window;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm_null (view);
 
 	window = gtk_widget_get_ancestor (GTK_WIDGET (view), GTK_TYPE_WINDOW);
 	if (window == NULL) {
@@ -883,7 +883,7 @@ open_location (FMDirectoryView *directory_view,
 	GtkWindow *window;
 	GFile *location;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
+	g_fuck_fm (directory_view);
 	g_assert (new_uri != NULL);
 
 	window = fm_directory_view_get_containing_window (directory_view);
@@ -922,7 +922,7 @@ choose_program (FMDirectoryView *view,
 	char *uri;
 	char *mime_type;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm (view);
 	g_assert (CAJA_IS_FILE (file));
 
 	caja_file_ref (file);
@@ -955,7 +955,7 @@ open_with_other_program (FMDirectoryView *view)
 {
         GList *selection;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm (view);
 
        	selection = fm_directory_view_get_selection (view);
 
@@ -970,7 +970,7 @@ static void
 action_other_application_callback (GtkAction *action,
 				   gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	g_fuck_fm (callback_data);
 
 	open_with_other_program (FM_DIRECTORY_VIEW (callback_data));
 }
@@ -1113,7 +1113,7 @@ action_create_link_callback (GtkAction *action,
         GList *selection;
         GArray *selected_item_locations;
 
-        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+        g_fuck_fm (callback_data);
 
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
@@ -1130,7 +1130,7 @@ static void
 action_select_all_callback (GtkAction *action,
 			    gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	g_fuck_fm (callback_data);
 
 	fm_directory_view_select_all (callback_data);
 }
@@ -1139,7 +1139,7 @@ static void
 action_invert_selection_callback (GtkAction *action,
 				  gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	g_fuck_fm (callback_data);
 
 	fm_directory_view_invert_selection (callback_data);
 }
@@ -1298,7 +1298,7 @@ static void
 action_select_pattern_callback (GtkAction *action,
 				gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	g_fuck_fm (callback_data);
 
 	select_pattern(callback_data);
 }
@@ -1307,7 +1307,7 @@ static void
 action_reset_to_defaults_callback (GtkAction *action,
 				   gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	g_fuck_fm (callback_data);
 
 	fm_directory_view_reset_to_defaults (callback_data);
 }
@@ -1505,7 +1505,7 @@ static void
 action_empty_trash_callback (GtkAction *action,
 			     gpointer callback_data)
 {
-        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+        g_fuck_fm (callback_data);
 
 	caja_file_operations_empty_trash (GTK_WIDGET (callback_data));
 }
@@ -1514,7 +1514,7 @@ static void
 action_new_folder_callback (GtkAction *action,
 			    gpointer callback_data)
 {
-        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+        g_fuck_fm (callback_data);
 
 	fm_directory_view_new_folder (FM_DIRECTORY_VIEW (callback_data));
 }
@@ -1523,7 +1523,7 @@ static void
 action_new_empty_file_callback (GtkAction *action,
 				gpointer callback_data)
 {
-        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+        g_fuck_fm (callback_data);
 
 	fm_directory_view_new_file (FM_DIRECTORY_VIEW (callback_data), NULL, NULL);
 }
@@ -1536,7 +1536,7 @@ action_new_launcher_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GtkWindow *window;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	g_fuck_fm (callback_data);
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
@@ -1562,7 +1562,7 @@ action_properties_callback (GtkAction *action,
         GList *selection;
 	GList *files;
 
-        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+        g_fuck_fm (callback_data);
 
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
@@ -1587,7 +1587,7 @@ action_location_properties_callback (GtkAction *action,
 	FMDirectoryView *view;
 	GList           *files;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	g_fuck_fm (callback_data);
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 	g_assert (CAJA_IS_FILE (view->details->location_popup_directory_as_file));
@@ -2792,7 +2792,7 @@ copy_move_done_callback (GHashTable *debuting_files, gpointer data)
 	directory_view = copy_move_done_data->directory_view;
 
 	if (directory_view != NULL) {
-		g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
+		g_fuck_fm (directory_view);
 
 		debuting_files_data = g_new (DebutingFilesData, 1);
 		debuting_files_data->debuting_files = g_hash_table_ref (debuting_files);
@@ -3855,7 +3855,7 @@ fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files,
 	g_assert (relative_item_points->len == 0
 		  || g_list_length (files) == relative_item_points->len);
 
-        g_assert (FM_IS_DIRECTORY_VIEW (view));
+        g_fuck_fm (view);
         g_assert (files != NULL);
 
 	/* create a list of URIs */
@@ -3887,7 +3887,7 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files,
 	GList *uris;
 	CopyMoveDoneData *copy_move_done_data;
 
-        g_assert (FM_IS_DIRECTORY_VIEW (view));
+        g_fuck_fm (view);
         g_assert (files != NULL);
 	g_assert (g_list_length (files) == relative_item_points->len
 		|| relative_item_points->len == 0);
@@ -4360,7 +4360,7 @@ static void
 open_one_in_new_window (gpointer data, gpointer callback_data)
 {
 	g_assert (CAJA_IS_FILE (data));
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	g_fuck_fm (callback_data);
 
 	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (callback_data),
 					 CAJA_FILE (data),
@@ -4372,7 +4372,7 @@ static void
 open_one_in_folder_window (gpointer data, gpointer callback_data)
 {
 	g_assert (CAJA_IS_FILE (data));
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	g_fuck_fm (callback_data);
 
 	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (callback_data),
 					 CAJA_FILE (data),
@@ -4383,7 +4383,7 @@ open_one_in_folder_window (gpointer data, gpointer callback_data)
 CajaFile *
 fm_directory_view_get_directory_as_file (FMDirectoryView *view)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm_null (view);
 
 	return view->details->directory_as_file;
 }
@@ -6365,7 +6365,7 @@ paste_into (FMDirectoryView *view,
 {
 	PasteIntoData *data;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm (view);
 	g_assert (CAJA_IS_FILE (target));
 
 	data = g_new (PasteIntoData, 1);
@@ -6428,7 +6428,7 @@ real_action_rename (FMDirectoryView *view,
 	CajaFile *file;
 	GList *selection;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm (view);
 
 	selection = fm_directory_view_get_selection (view);
 
@@ -8454,7 +8454,7 @@ real_update_location_menu_volumes (FMDirectoryView *view)
 	gboolean show_poll;
 	GDriveStartStopType start_stop_type;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm (view);
 	g_assert (CAJA_IS_FILE (view->details->location_popup_directory_as_file));
 
 	file = CAJA_FILE (view->details->location_popup_directory_as_file);
@@ -9203,7 +9203,7 @@ void
 fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view,
 						  GdkEventButton  *event)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm (view);
 
 	/* Make the context menu items not flash as they update to proper disabled,
 	 * etc. states by forcing menus to update now.
@@ -9232,7 +9232,7 @@ void
 fm_directory_view_pop_up_background_context_menu (FMDirectoryView *view,
 						  GdkEventButton  *event)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm (view);
 
 	/* Make the context menu items not flash as they update to proper disabled,
 	 * etc. states by forcing menus to update now.
@@ -9271,7 +9271,7 @@ location_popup_file_attributes_ready (CajaFile *file,
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (data);
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm (view);
 
 	g_assert (file == view->details->location_popup_directory_as_file);
 
@@ -9339,7 +9339,7 @@ fm_directory_view_pop_up_location_context_menu (FMDirectoryView *view,
 {
 	CajaFile *file;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm (view);
 
 	if (location != NULL) {
 		file = caja_file_get_by_uri (location);
@@ -9402,7 +9402,7 @@ fm_directory_view_drop_proxy_received_netscape_url (FMDirectoryView *view,
 static void
 schedule_update_menus (FMDirectoryView *view)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm (view);
 
 	/* Don't schedule updates after destroy (#349551),
  	 * or if we are not active.
@@ -9444,7 +9444,7 @@ update_status_idle_callback (gpointer data)
 static void
 schedule_update_status (FMDirectoryView *view)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm (view);
 
 	/* Make sure we haven't already destroyed it */
 	if (view->details->window == NULL) {
@@ -9554,7 +9554,7 @@ load_directory (FMDirectoryView *view,
 	CajaFile *old_file;
 	CajaFileAttributes attributes;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm (view);
 	g_assert (CAJA_IS_DIRECTORY (directory));
 
 	fm_directory_view_stop (view);
@@ -9701,7 +9701,7 @@ metadata_for_directory_as_file_ready_callback (CajaFile *file,
 
 	view = callback_data;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm (view);
 	g_assert (view->details->directory_as_file == file);
 	g_assert (view->details->metadata_for_directory_as_file_pending);
 
@@ -9719,7 +9719,7 @@ metadata_for_files_in_directory_ready_callback (CajaDirectory *directory,
 
 	view = callback_data;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm (view);
 	g_assert (view->details->model == directory);
 	g_assert (view->details->metadata_for_files_in_directory_pending);
 
@@ -9749,7 +9749,7 @@ real_get_emblem_names_to_exclude (FMDirectoryView *view)
 	char **excludes;
 	int i;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm_null (view);
 
 	excludes = g_new (char *, 3);
 
@@ -10308,7 +10308,7 @@ fm_directory_view_trash_state_changed_callback (CajaTrashMonitor *trash_monitor,
 	FMDirectoryView *view;
 
 	view = (FMDirectoryView *) callback_data;
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm (view);
 
 	schedule_update_menus (view);
 }
@@ -10838,7 +10838,7 @@ fm_directory_view_handle_raw_drop (FMDirectoryView  *view,
 gboolean
 fm_directory_view_get_active (FMDirectoryView *view)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_fuck_fm_null (view);
 	return view->details->active;
 }
 

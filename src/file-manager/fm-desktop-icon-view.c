@@ -729,7 +729,7 @@ static void
 action_empty_trash_conditional_callback (GtkAction *action,
         gpointer data)
 {
-    g_assert (FM_IS_DIRECTORY_VIEW (data));
+    g_fuck_fm (data);
 
     caja_file_operations_empty_trash (GTK_WIDGET (data));
 }
