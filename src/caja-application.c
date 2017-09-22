@@ -125,7 +125,7 @@ static void     volume_removed_callback            (GVolumeMonitor           *mo
         CajaApplication      *application);
 static void     drive_listen_for_eject_button      (GDrive *drive,
         CajaApplication *application);
-static void     caja_application_load_session     (CajaApplication *application);
+static gboolean caja_application_load_session     (CajaApplication *application);
 static char *   caja_application_get_session_data (void);
 
 G_DEFINE_TYPE (CajaApplication, caja_application, G_TYPE_OBJECT);
@@ -268,6 +268,24 @@ automount_all_volumes (CajaApplication *application)
 
 }
 
+void
+caja_application_save_session (void)
+{
+    gchar *filename = g_build_filename (caja_get_user_directory (), "last-session", NULL);
+    GFile *file = g_file_new_for_path (filename);
+    GFileOutputStream *output = g_file_replace (file, NULL, FALSE,
+                                                G_FILE_CREATE_NONE,
+                                                NULL, NULL);
+    gchar *data = caja_application_get_session_data ();
+    g_output_stream_write (G_OUTPUT_STREAM(output), data, strlen(data), NULL, NULL);
+    g_output_stream_close (G_OUTPUT_STREAM(output), NULL, NULL);
+    g_message ("Current session saved in %s", filename);
+    g_free (data);
+    g_free (filename);
+    g_object_unref (output);
+    g_object_unref (file);
+}
+
 static void
 smclient_save_state_cb (EggSMClient   *client,
                         GKeyFile      *state_file,
@@ -364,7 +382,7 @@ caja_application_finalize (GObject *object)
 	{
 		g_bus_unwatch_name (application->ss_watch_id);
 	}
-	
+
 	if (application->volume_queue != NULL)
 	{
 		g_list_free_full (application->volume_queue, g_object_unref);
@@ -654,7 +672,7 @@ screensaver_proxy_ready_cb (GObject *source,
 	CajaApplication *application = user_data;
 	GError *error = NULL;
 	GDBusProxy *ss_proxy;
-	
+
 	ss_proxy = g_dbus_proxy_new_finish (res, &error);
 
 	if (error != NULL)
@@ -1129,38 +1147,39 @@ caja_application_startup (CajaApplication *application,
         /* point to the Unix home folder */
         g_timeout_add_seconds (30, (GSourceFunc) desktop_changed_callback_connect, application);
 
-        /* Create the other windows. */
-        if (urls != NULL || !no_default_window)
+        /* Load session if available */
+        if (!caja_application_load_session (application))
         {
-            if (unique_app_is_running (application->unique_app))
+            /* Create the other windows. */
+            if (urls != NULL || !no_default_window)
             {
-                message = unique_message_data_new ();
-                _unique_message_data_set_geometry_and_uris (message, geometry, urls);
-                if (browser_window)
+                if (unique_app_is_running (application->unique_app))
                 {
-                    unique_app_send_message (application->unique_app,
-                                             COMMAND_OPEN_BROWSER, message);
+                    message = unique_message_data_new ();
+                    _unique_message_data_set_geometry_and_uris (message, geometry, urls);
+                    if (browser_window)
+                    {
+                        unique_app_send_message (application->unique_app,
+                                                 COMMAND_OPEN_BROWSER, message);
+                    }
+                    else
+                    {
+                        unique_app_send_message (application->unique_app,
+                                                 UNIQUE_OPEN, message);
+                    }
+                    unique_message_data_free (message);
                 }
                 else
                 {
-                    unique_app_send_message (application->unique_app,
-                                             UNIQUE_OPEN, message);
+                    open_windows (application, NULL,
+                                  urls,
+                                  gdk_display_get_default_screen (gdk_display_get_default()),
+                                  // gdk_screen_get_default (),
+                                  geometry,
+                                  browser_window);
                 }
-                unique_message_data_free (message);
-            }
-            else
-            {
-                open_windows (application, NULL,
-                              urls,
-                              gdk_display_get_default_screen (gdk_display_get_default()),
-                              // gdk_screen_get_default (),
-                              geometry,
-                              browser_window);
             }
         }
-
-        /* Load session info if availible */
-        caja_application_load_session (application);
 
         /* load accelerator map, and register save callback */
         accel_map_filename = caja_get_accel_map_file ();
@@ -1705,7 +1724,7 @@ check_screen_lock_and_mount (CajaApplication *application,
         } else {
                 /* mount it immediately */
 		caja_file_operations_mount_volume (NULL, volume, TRUE);
-        }       
+        }
 }
 
 static void
@@ -2164,7 +2183,7 @@ caja_application_get_session_data (void)
     return data;
 }
 
-void
+static gboolean
 caja_application_load_session (CajaApplication *application)
 {
     xmlDocPtr doc;
@@ -2173,24 +2192,41 @@ caja_application_load_session (CajaApplication *application)
     GKeyFile *state_file;
     char *data;
 
-    if (!egg_sm_client_is_resumed (application->smclient))
+    data = malloc (32768); // FIXME: file length >= 32768
+    gchar *filename = g_build_filename (caja_get_user_directory (), "last-session", NULL);
+    GFile *file = g_file_new_for_path (filename);
+    GFileInputStream *input = g_file_read (file, NULL, NULL);
+    gssize bufsize = 0;
+    if (input)
     {
-        return;
+        bufsize = g_input_stream_read (G_INPUT_STREAM (input), data, 32767, NULL, NULL);
+        g_input_stream_close (G_INPUT_STREAM (input), NULL, NULL);
+        g_object_unref (input);
     }
+    g_free (filename);
+    g_object_unref (file);
 
-    state_file = egg_sm_client_get_state_file (application->smclient);
-    if (!state_file)
+    if (!bufsize)
     {
-        return;
-    }
+        if (!egg_sm_client_is_resumed (application->smclient))
+        {
+            return FALSE;
+        }
 
-    data = g_key_file_get_string (state_file,
-                                  "Caja",
-                                  "documents",
-                                  NULL);
-    if (data == NULL)
-    {
-        return;
+        state_file = egg_sm_client_get_state_file (application->smclient);
+        if (!state_file)
+        {
+            return FALSE;
+        }
+
+        data = g_key_file_get_string (state_file,
+                                      "Caja",
+                                      "documents",
+                                      NULL);
+        if (data == NULL)
+        {
+            return FALSE;
+        }
     }
 
     bail = TRUE;
@@ -2378,7 +2414,7 @@ caja_application_load_session (CajaApplication *application)
                 else if (g_strcmp0 (type, "spatial") == 0)
                 {
                     location = g_file_new_for_uri (location_uri);
-                    window = caja_application_get_spatial_window (application, NULL, NULL, 
+                    window = caja_application_get_spatial_window (application, NULL, NULL,
                     											  location, gdk_screen_get_default (),
                     											  NULL);
 
@@ -2414,7 +2450,10 @@ caja_application_load_session (CajaApplication *application)
     if (bail)
     {
         g_message ("failed to load session");
+        return FALSE;
     }
+
+    return TRUE;
 }
 
 static void

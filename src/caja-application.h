@@ -107,6 +107,7 @@ void caja_application_close_all_spatial_windows  (void);
 void caja_application_open_desktop      (CajaApplication *application);
 void caja_application_close_desktop     (void);
 gboolean caja_application_save_accel_map    (gpointer data);
+void caja_application_save_session          (void);
 void caja_application_open_location (CajaApplication *application,
         GFile *location,
         GFile *selection,
