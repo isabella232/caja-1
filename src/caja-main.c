@@ -117,7 +117,7 @@ void caja_main_event_loop_register (GtkWidget *object)
 void caja_main_event_loop_register (GtkObject *object)
 #endif
 {
-    g_signal_connect (object, "destroy", G_CALLBACK (caja_application_save_session), NULL);
+    // g_signal_connect (object, "destroy", G_CALLBACK (caja_application_save_session), NULL);
     g_signal_connect (object, "destroy", G_CALLBACK (event_loop_unregister), NULL);
     event_loop_registrants = g_slist_prepend (event_loop_registrants, GTK_WIDGET (object));
 }
