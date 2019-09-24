@@ -1637,6 +1637,10 @@ location_has_really_changed (CajaWindowSlot *slot)
 
         g_object_unref (location_copy);
     }
+
+    char *uri;
+    uri = g_file_get_uri (slot->location);
+    printf(">>> location updated: %lX %s\n", slot, uri); fflush(stdout);
 }
 
 static void
@@ -2384,4 +2388,3 @@ caja_window_reload (CajaWindow *window)
 
     caja_window_slot_reload (window->details->active_pane->active_slot);
 }
-

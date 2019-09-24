@@ -33,6 +33,7 @@
 #include "caja-window-slot.h"
 #include "caja-navigation-window-pane.h"
 #include <libcaja-private/caja-dnd.h>
+#include "caja-workspace.h"
 
 #include <glib/gi18n.h>
 #include <gio/gio.h>
@@ -199,6 +200,11 @@ caja_notebook_init (CajaNotebook *notebook)
 
     g_signal_connect (notebook, "button-press-event",
                       (GCallback)button_press_cb, NULL);
+
+    g_signal_connect (notebook, "page-added", (GCallback)caja_workspace_add_page, NULL);
+    g_signal_connect (notebook, "page-removed", (GCallback)caja_workspace_remove_page, NULL);
+    g_signal_connect (notebook, "page-reordered", (GCallback)caja_workspace_reorder_page, NULL);
+    g_signal_connect (notebook, "switch-page", (GCallback)caja_workspace_switch_page, NULL);
 
     /* Set up drag-and-drop target */
     /* TODO this would be used for opening a new tab.
@@ -407,6 +413,7 @@ caja_notebook_add_tab (CajaNotebook *notebook,
                        int position,
                        gboolean jump_to)
 {
+    printf(">>> slot added: %lX %lX\n", notebook, slot); fflush(stdout);
     GtkNotebook *gnotebook = GTK_NOTEBOOK (notebook);
     GtkWidget *tab_label;
 
