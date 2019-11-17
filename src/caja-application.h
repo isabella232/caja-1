@@ -85,7 +85,8 @@ void                 caja_application_startup           (CajaApplication *applic
         gboolean             no_desktop,
         gboolean             browser_window,
         const char          *default_geometry,
-        char               **urls);
+        char               **urls,
+        char               *session);
 GList *              caja_application_get_window_list           (void);
 GList *              caja_application_get_spatial_window_list    (void);
 unsigned int         caja_application_get_n_windows            (void);

@@ -339,6 +339,7 @@ main (int argc, char *argv[])
     gboolean version;
     gboolean autostart_mode;
     const char *autostart_id;
+    gchar *session;
     gchar *geometry;
     gchar **remaining;
     gboolean perform_self_check;
@@ -364,6 +365,10 @@ main (int argc, char *argv[])
         {
             "version", '\0', 0, G_OPTION_ARG_NONE, &version,
             N_("Show the version of the program."), NULL
+        },
+        {
+            "session", '\0', 0, G_OPTION_ARG_STRING, &session,
+            N_("Load a session file on startup."), N_("SESSION")
         },
         {
             "geometry", 'g', 0, G_OPTION_ARG_STRING, &geometry,
@@ -429,6 +434,7 @@ main (int argc, char *argv[])
 
     /* Get parameters. */
     remaining = NULL;
+    session = NULL;
     geometry = NULL;
     version = FALSE;
     kill_shell = FALSE;
@@ -631,7 +637,7 @@ main (int argc, char *argv[])
          kill_shell, no_default_window, no_desktop,
          browser_window,
          geometry,
-         uris);
+         uris, session);
         g_strfreev (uris);
 
         if (unique_app_is_running (application->unique_app) ||

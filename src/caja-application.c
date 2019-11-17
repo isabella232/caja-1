@@ -125,7 +125,7 @@ static void     volume_removed_callback            (GVolumeMonitor           *mo
         CajaApplication      *application);
 static void     drive_listen_for_eject_button      (GDrive *drive,
         CajaApplication *application);
-static gboolean caja_application_load_session     (CajaApplication *application);
+static gboolean caja_application_load_session     (CajaApplication *application, char *session);
 static char *   caja_application_get_session_data (void);
 
 G_DEFINE_TYPE (CajaApplication, caja_application, G_TYPE_OBJECT);
@@ -268,6 +268,7 @@ automount_all_volumes (CajaApplication *application)
 
 }
 
+/*
 void
 caja_application_save_session (void)
 {
@@ -285,6 +286,7 @@ caja_application_save_session (void)
     g_object_unref (output);
     g_object_unref (file);
 }
+*/
 
 static void
 smclient_save_state_cb (EggSMClient   *client,
@@ -1079,7 +1081,7 @@ caja_application_startup (CajaApplication *application,
                           gboolean no_desktop,
                           gboolean browser_window,
                           const char *geometry,
-                          char **urls)
+                          char **urls, char *session)
 {
     UniqueMessageData *message;
 
@@ -1148,7 +1150,7 @@ caja_application_startup (CajaApplication *application,
         g_timeout_add_seconds (30, (GSourceFunc) desktop_changed_callback_connect, application);
 
         /* Load session if available */
-        if (!caja_application_load_session (application))
+        if (!caja_application_load_session (application, session))
         {
             /* Create the other windows. */
             if (urls != NULL || !no_default_window)
@@ -2184,8 +2186,11 @@ caja_application_get_session_data (void)
 }
 
 static gboolean
-caja_application_load_session (CajaApplication *application)
+caja_application_load_session (CajaApplication *application, char *session)
 {
+    if (session == NULL) // no session file specified
+        return FALSE;
+
     xmlDocPtr doc;
     gboolean bail;
     xmlNodePtr root_node;
@@ -2193,7 +2198,7 @@ caja_application_load_session (CajaApplication *application)
     char *data;
 
     data = malloc (32768); // FIXME: file length >= 32768
-    gchar *filename = g_build_filename (caja_get_user_directory (), "last-session", NULL);
+    gchar *filename = session; // g_build_filename (caja_get_user_directory (), session, NULL);
     GFile *file = g_file_new_for_path (filename);
     GFileInputStream *input = g_file_read (file, NULL, NULL);
     gssize bufsize = 0;
