@@ -2196,15 +2196,16 @@ caja_application_load_session (CajaApplication *application, char *session)
     xmlNodePtr root_node;
     GKeyFile *state_file;
     char *data;
+    int MAX_SESSION_FILE_SIZE = 65535; // FIXME: file length >= 65536
 
-    data = malloc (65536); // FIXME: file length >= 65536
+    data = malloc (MAX_SESSION_FILE_SIZE + 1);
     gchar *filename = session; // g_build_filename (caja_get_user_directory (), session, NULL);
     GFile *file = g_file_new_for_path (filename);
     GFileInputStream *input = g_file_read (file, NULL, NULL);
     gssize bufsize = 0;
     if (input)
     {
-        bufsize = g_input_stream_read (G_INPUT_STREAM (input), data, 32767, NULL, NULL);
+        bufsize = g_input_stream_read (G_INPUT_STREAM (input), data, MAX_SESSION_FILE_SIZE, NULL, NULL);
         g_input_stream_close (G_INPUT_STREAM (input), NULL, NULL);
         g_object_unref (input);
     }
