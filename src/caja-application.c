@@ -2197,7 +2197,7 @@ caja_application_load_session (CajaApplication *application, char *session)
     GKeyFile *state_file;
     char *data;
 
-    data = malloc (32768); // FIXME: file length >= 32768
+    data = malloc (65536); // FIXME: file length >= 65536
     gchar *filename = session; // g_build_filename (caja_get_user_directory (), session, NULL);
     GFile *file = g_file_new_for_path (filename);
     GFileInputStream *input = g_file_read (file, NULL, NULL);
