@@ -833,10 +833,10 @@ static const GtkActionEntry navigation_entries[] =
         NULL, N_("Open a folder window for the displayed location"),
         G_CALLBACK (action_folder_window_callback)
     },
-    /* name, stock id, label */  { "Close All Windows", NULL, N_("Close _All Windows"),
-        "<control>Q", N_("Close all Navigation windows"),
-        G_CALLBACK (action_close_all_windows_callback)
-    },
+    /* name, stock id, label */  //{ "Close All Windows", NULL, N_("Close _All Windows"),
+    //    "<control>Q", N_("Close all Navigation windows"),
+    //    G_CALLBACK (action_close_all_windows_callback)
+    //},
     /* name, stock id, label */  { "Go to Location", NULL, N_("_Location..."),
         "<control>L", N_("Specify a location to open"),
         G_CALLBACK (action_go_to_location_callback)
