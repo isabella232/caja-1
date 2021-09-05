@@ -2131,7 +2131,7 @@ fm_directory_view_init (FMDirectoryView *view)
 							  G_CALLBACK(click_policy_changed_callback),
 							  view);
 	g_signal_connect_swapped (caja_preferences,
-							  "changed::" CAJA_PREFERENCES_SORT_DIRECTORIES_FIRST, 
+							  "changed::" CAJA_PREFERENCES_SORT_DIRECTORIES_FIRST,
 							  G_CALLBACK(sort_directories_first_changed_callback),
 							  view);
 	g_signal_connect_swapped (mate_lockdown_preferences,
@@ -2842,7 +2842,7 @@ copy_move_done_callback (GHashTable *debuting_files, gpointer data)
 
 		/* Schedule menu update for undo items */
 		schedule_update_menus (directory_view);
-		
+
 	}
 
 	copy_move_done_data_free (copy_move_done_data);
@@ -7399,10 +7399,10 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */       N_("_Open Scripts Folder"), NULL,
    /* tooltip */                 N_("Show the folder containing the scripts that appear in this menu"),
                                  G_CALLBACK (action_open_scripts_folder_callback) },
-  /* name, stock id */         { "Empty Trash", NULL,
-  /* label, accelerator */       N_("E_mpty Trash"), NULL,
-  /* tooltip */                  N_("Delete all items in the Trash"),
-                                 G_CALLBACK (action_empty_trash_callback) },
+  /* name, stock id */         //{ "Empty Trash", NULL,
+  /* label, accelerator */     //  N_("E_mpty Trash"), NULL,
+  /* tooltip */                //  N_("Delete all items in the Trash"),
+                               //  G_CALLBACK (action_empty_trash_callback) },
   /* name, stock id */         { "Cut", GTK_STOCK_CUT,
   /* label, accelerator */       NULL, NULL,
   /* tooltip */                  N_("Prepare the selected files to be moved with a Paste command"),
@@ -7471,7 +7471,7 @@ static const GtkActionEntry directory_view_entries[] = {
   /* label, accelerator */	     N_("_Redo"), "<control>Y",
   /* tooltip */     			 	 N_("Redo the last undone action"),
 								 G_CALLBACK (action_redo_callback) },
- 
+
   /*
    * multiview-TODO: decide whether "Reset to Defaults" should
    * be window-wide, and not just view-wide.
